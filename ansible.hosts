@@ -1,0 +1,15 @@
+[switches:children]
+spine
+leaf
+
+[spine]
+spine1
+spine2
+
+[leaf]
+leaf1
+leaf2
+
+[server]
+server1
+server2

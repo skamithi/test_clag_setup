@@ -1,0 +1,5 @@
+- name: restart switchd
+  service: name=switchd state=restarted
+
+- name: update timezone
+  command: dpkg-reconfigure --frontend noninteractive tzdata

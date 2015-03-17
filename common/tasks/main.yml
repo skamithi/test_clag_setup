@@ -1,0 +1,26 @@
+- name: set timezone
+  template: src=timezone.j2 dest=/etc/timezone
+  notify: update timezone
+
+- name: check for ports.conf existence
+  stat: path=/etc/cumulus/ports.conf
+  register: ports_conf
+
+- name: create ports.conf if it doesn't exist
+  file: path=/etc/cumulus/ports.conf state=touch
+  when: ports_conf.stat.exists == false
+  notify: restart switchd
+
+- name: configure ports.conf
+  cl_ports: speed_4_by_10g="{{ports_in_4_by_10|default()}}" speed_40g="{{ports_40g|default()}}"
+  notify: restart switchd
+
+- name: install license onto root system. Helps verify URL
+  get_url: url="{{ license_server_url}}/{{ansible_hostname}}.lic" dest=/root/license_file.txt mode=0400
+
+- name: install license
+  cl_license: src=/root/license_file.txt
+  notify: restart switchd
+
+- name: install netshow
+  apt: name=netshow state=present

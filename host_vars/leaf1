@@ -1,0 +1,15 @@
+cl_interfaces:
+  peerlink.4094:
+     ipv4: "10.1.1.2/31"
+     clagd_enable: "yes"
+     clagd_peer_ip: "10.1.1.3"
+     clagd_sys_mac: "44:38:39:ff:40:94"
+
+cl_bonds:
+  server1:
+     clag_id: 2
+     slaves: ["swp32s0"]
+
+  server2:
+     clag_id: 3
+     slaves: ["swp32s1"]

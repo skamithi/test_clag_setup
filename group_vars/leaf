@@ -1,0 +1,31 @@
+ports_in_4_by_10: "swp1, swp32"
+ports_40g: "swp2-31"
+
+allowed_list:
+  - lo
+  - eth0
+  - swp1s0-1
+  - swp1s2-3
+  - swp17-18
+  - swp32s0-4
+  - peerlink.4094
+  - peerlink
+  - uplink
+  - thebridge
+
+cl_bonds:
+  uplink:
+    slaves: ["swp1s0-1", "swp1s2-3"]
+    clag_id: "1"
+  peerlink:
+    slaves: ["swp17-18"]
+cl_bridges:
+  thebridge:
+    ports:
+       - peerlink
+       - uplink
+       - server1
+       - server2
+    vlan_aware: "yes"
+    vids: ['1-10']
+    pvid: 1

@@ -1,0 +1,36 @@
+- name: copy trustedkey from cumulus to server
+  copy: src=trustedkeys dest=/root/trustedkeys
+
+- name: import trusted keys from cumulus into server keyring
+  command: apt-key add /root/trustedkeys
+
+- name: copy cumulus sources list to sources.list.d
+  copy: src=cumulus.list dest=/etc/apt/sources.list.d/cumulus.list
+
+- name: copy ifupdown2 and its dependencies
+  apt: name="{{item}}" state=present
+  with_items:
+    - python-ifupdown2
+    - python-mako
+    - python-ipaddr
+    - python-argcomplete
+
+- name: install netshow
+  apt: name=netshow state=present
+
+- name: add sources to the /etc/network/interfaces
+  lineinfile:
+    dest: "/etc/network/interfaces"
+    regexp: "^source"
+    line: "source /etc/network/interfaces.d/*"
+
+- name: enable eth2 and eth3
+  cl_interface: name="{{item}}"
+  with_items: 
+    - eth2
+    - eth3
+  notify: reload networking
+
+- name: config bond
+  cl_bond: name=bond0 slaves="eth2-3" ipv4="{{bond_ip}}" 
+  notify: reload networking

@@ -1,0 +1,24 @@
+allowed_list:
+  - lo
+  - eth0
+  - swp49-52
+  - swp17-18
+  - peerlink.4094
+  - peerlink
+  - uplink
+  - thebridge
+
+cl_bonds:
+  uplink:
+    slaves: ["swp49-52"]
+    clag_id: "1"
+  peerlink:
+    slaves: ["swp17-18"]
+cl_bridges:
+  thebridge:
+    ports:
+       - peerlink
+       - uplink
+    vlan_aware: "yes"
+    vids: ['1-10']
+    pvid: 1
