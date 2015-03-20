@@ -24,15 +24,37 @@ class base::interfaces {
 
   cumulus_bridge { 'bridge':
     vlan_aware => true,
-    ports => ['peerlink', 'uplink'],
+    ports => $bridge_ports,
     vids => ['1-10'],
     pvid => 1,
     alias_name => 'vlan aware bridge',
     notify => Exec['ifreload -a']
   }
 
-  # refreshonly makes sure that ifreload is only executed
-  # if a network change occurs
+  if $server1_port {
+    cumulus_bond { 'server1':
+      slaves => $server1_port,
+      clag_id => 2,
+      mstpctl_bpduguard => true,
+      notify => Exec['ifreload -a']
+    }
+  }
+
+  if $server2_port {
+    cumulus_bond { 'server2':
+      slaves => $server2_port,
+      clag_id => 3,
+      mstpctl_bpduguard => true,
+      notify => Exec['ifreload -a']
+    }
+  }
+
+
+
+  # setting start as ifreload -a seems to make sure
+  # ifreload -a is always executed which is desired
+  # networking start only runs ifup -a which doesn't
+  # delete unwanted interfaces
   exec { 'ifreload -a':
     path  => '/sbin',
     refreshonly => true

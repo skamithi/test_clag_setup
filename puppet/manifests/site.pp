@@ -7,8 +7,11 @@ node 'leaf1.lab.local' {
   $peerlink_ip = '10.1.1.0/31'
   $sys_mac = '44:38:39:ff:20:94'
   $peer_ip = '10.1.1.1'
+  $bridge_ports = ['peerlink', 'uplink', 'server1', 'server2']
   $uplink_ports = ['swp1s0-1', 'swp1s2-3']
   $peerlink_ports = ['swp17-18']
+  $server1_port = ['swp32s1']
+  $server2_port = ['swp32s0']
   include base::role::switch
 }
 
@@ -18,8 +21,11 @@ node 'leaf2.lab.local' {
   $peerlink_ip = '10.1.1.1/31'
   $sys_mac = '44:38:39:ff:20:94'
   $peer_ip = '10.1.1.0'
+  $bridge_ports = ['peerlink', 'uplink', 'server1', 'server2']
   $uplink_ports = ['swp1s0-1', 'swp1s2-3']
   $peerlink_ports = ['swp17-18']
+  $server1_port = ['swp32s1']
+  $server2_port = ['swp32s0']
   include base::role::switch
 }
 
@@ -28,6 +34,7 @@ node 'spine1.lab.local' {
   $speed_4_by_10g  = []
   $peerlink_ip = '10.1.1.2/31'
   $sys_mac = '44:38:39:ff:40:94'
+  $bridge_ports = ['peerlink', 'uplink']
   $peer_ip = '10.1.1.3'
   $uplink_ports = ['swp49-52']
   $peerlink_ports = ['swp17-18']
@@ -42,6 +49,7 @@ node 'spine2.lab.local' {
   $peer_ip = '10.1.1.2'
   $uplink_ports = ['swp49-52']
   $peerlink_ports = ['swp17-18']
+  $bridge_ports = ['peerlink', 'uplink']
   include base::role::switch
 }
 
