@@ -2,7 +2,7 @@
   template: src=interfaces.j2 dest=/etc/network/interfaces
 
 - name: interface policy
-  cl_interface_policy: 
+  cl_interface_policy:
      allowed: "{{ allowed_list }}"
   tags: allowed
 
@@ -14,60 +14,62 @@
   cl_interface: name=eth0 addr_method=dhcp
   notify: reload networking
 
-- name: configure bridges
-  cl_bridge:                                                                                 
-      name: "{{ item.key }}"                                                                   
-      ports: "{{ item.value.ports }}"                                                            
-      vlan_aware: "{{ item.value.vlan_aware|default() }}"                                  
-      ipv4:  "{{ item.value.ipv4|default() }}"                                             
-      ipv6: "{{ item.value.ipv6|default() }}"                                              
-      alias_name: "{{ item.value.alias_name|default() }}"                                  
-      addr_method: "{{ item.value.addr_method|default() }}"                                
-      mtu: 9000
-      vids: "{{ item.value.vids|default() }}"                                              
-      virtual_ip: "{{ item.value.virtual_ip|default() }}"                                  
-      virtual_mac: "{{ item.value.virtual_mac|default() }}"                                
-      mstpctl_treeprio: "{{ item.value.mstpctl_treeprio|default() }}"                      
-  with_dict: cl_bridges                                                                       
-  notify: reload networking                                                                  
-  tags: bridging
-                         
-- name: configure bonds
-  cl_bond:                                                                                   
-      name: "{{ item.key }}"                                                                   
-      slaves: "{{ item.value.slaves }}"                                                          
-      clag_id: "{{ item.value.clag_id|default()}}"                                          
-      addr_method: "{{item.value.addr_method|default()}}"
-      mtu: 9000
-      ipv4: "{{item.value.ipv4|default()}}"
-      ipv6: "{{item.value.ipv6|default()}}"                                                
-      vids: "{{ item.value.vids|default() }}"                                              
-      virtual_ip: "{{ item.value.virtual_ip|default() }}"                                  
-      virtual_mac: "{{ item.value.virtual_mac|default() }}"                                
-      mstpctl_portnetwork: "{{ item.value.mstpctl_portnetwork|default(0) }}"                
-      mstpctl_bpduguard: "{{ item.value.mstpctl_bpduguard|default(0) }}"                    
-  with_dict: cl_bonds
-  notify: reload networking               
-  tags: bonding
-
-- name: configure interfaces
+ - name: configure interfaces
   cl_interface:
-      name: "{{ item.key }}"
-      ipv4:  "{{ item.value.ipv4|default([]) }}"
-      ipv6: "{{ item.value.ipv6|default([]) }}"
-      alias_name: "{{ item.value.alias_name|default() }}"
-      addr_method: "{{ item.value.addr_method|default() }}"
-      speed: "{{ item.value.link_speed|default() }}"
-      mtu: 9000
-      clagd_enable: "{{ item.value.clagd_enable|default() }}"
-      clagd_peer_ip: "{{ item.value.clagd_peer_ip|default() }}"
-      clagd_sys_mac: "{{ item.value.clagd_sys_mac|default() }}"
-      clagd_priority: "{{ item.value.clagd_priority|default() }}"
-      vids: "{{ item.value.vids|default() }}"
-      virtual_ip: "{{ item.value.virtual_ip|default() }}"
-      virtual_mac: "{{ item.value.virtual_mac|default() }}"
-      mstpctl_portnetwork: "{{ item.value.mstpctl_portnetwork|default(0) }}"
-      mstpctl_bpduguard: "{{ item.value.mstpctl_bpduguard|default(0) }}"
+    name: "{{ item.key }}"
+    ipv4: "{{ item.value.ipv4|default(omit) }}"
+    ipv6: "{{ item.value.ipv6|default(omit) }}"
+    alias_name: "{{ item.value.alias_name|default(omit) }}"
+    addr_method: "{{ item.value.addr_method|default(omit) }}"
+    speed: "{{ item.value.link_speed|default(omit) }}"
+    mtu: "{{ item.value.mtu|default(omit) }}"
+    clagd_enable: "{{ item.value.clagd_enable|default(omit) }}"
+    clagd_peer_ip: "{{ item.value.clagd_peer_ip|default(omit) }}"
+    clagd_sys_mac: "{{ item.value.clagd_sys_mac|default(omit) }}"
+    clagd_priority: "{{ item.value.clagd_priority|default(omit) }}"
+    vids: "{{ item.value.vids|default(omit) }}"
+    virtual_ip: "{{ item.value.virtual_ip|default(omit) }}"
+    virtual_mac: "{{ item.value.virtual_mac|default(omit) }}"
+    mstpctl_portnetwork: "{{ item.value.mstpctl_portnetwork|default('no') }}"
+    mstpctl_bpduguard: "{{ item.value.mstpctl_bpduguard|default('no') }}"
   with_dict: cl_interfaces
   notify: reload networking
   tags: interfaces
+
+- name: configure bonds
+  cl_bond:
+    name: "{{ item.key }}"
+    slaves: "{{ item.value.slaves }}"
+    clag_id: "{{ item.value.clag_id|default(omit) }}"
+    ipv4:  "{{ item.value.ipv4|default(omit) }}"
+    ipv6: "{{ item.value.ipv6|default(omit) }}"
+    alias_name: "{{ item.value.alias_name|default(omit) }}"
+    addr_method: "{{ item.value.addr_method|default(omit) }}"
+    mtu: "{{ item.value.mtu|default(omit) }}"
+    vids: "{{ item.value.vids|default(omit) }}"
+    virtual_ip: "{{ item.value.virtual_ip|default(omit) }}"
+    virtual_mac: "{{ item.value.virtual_mac|default(omit) }}"
+    mstpctl_portnetwork: "{{ item.value.mstpctl_portnetwork|default('no') }}"
+    mstpctl_bpduguard: "{{ item.value.mstpctl_bpduguard|default('no') }}"
+  with_dict: cl_bonds
+  notify: reload networking
+  tags: bonding
+
+- name: configure bridges
+  cl_bridge:
+    name: "{{ item.key }}"
+    ports: "{{ item.value.ports }}"
+    vlan_aware: "{{ item.value.vlan_aware|default(omit) }}"
+    ipv4:  "{{ item.value.ipv4|default(omit) }}"
+    ipv6: "{{ item.value.ipv6|default(omit) }}"
+    alias_name: "{{ item.value.alias_name|default(omit) }}"
+    addr_method: "{{ item.value.addr_method|default(omit) }}"
+    mtu: "{{ item.value.mtu|default(omit) }}"
+    vids: "{{ item.value.vids|default(omit) }}"
+    virtual_ip: "{{ item.value.virtual_ip|default(omit) }}"
+    virtual_mac: "{{ item.value.virtual_mac|default(omit) }}"
+    mstpctl_treeprio: "{{ item.value.mstpctl_treeprio|default(omit) }}"
+  with_dict: cl_bridges
+  notify: reload networking
+  tags: bridges
+
