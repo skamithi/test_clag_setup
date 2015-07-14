@@ -14,7 +14,7 @@
   cl_interface: name=eth0 addr_method=dhcp
   notify: reload networking
 
- - name: configure interfaces
+- name: configure interfaces
   cl_interface:
     name: "{{ item.key }}"
     ipv4: "{{ item.value.ipv4|default(omit) }}"
